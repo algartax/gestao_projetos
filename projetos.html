@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projetos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.27.0/dist/umd/supabase.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="projetos_css.css">
+</head>
+<body class="bg-light">
+    <button class="excel-button btn btn-success" onclick="exportToExcel()" title="Baixar Finalizados e Ativos">EXCEL</button>
+    
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Lançar Projetos</h1>
+        <form id="formProjetos" class="row g-3">
+            <div class="col-md-6">
+                <label for="nomeProjeto" class="form-label">Nome do Projeto:</label>
+                <input type="text" id="nomeProjeto" class="form-control">
+            </div>
+
+            <div class="col-md-6">
+                <label for="tipoProjeto" class="form-label">Tipo do Projeto:</label>
+                <select id="tipoProjeto" class="form-select">
+                    <option value=""></option>
+                    <option value="negocio">NEGÓCIO</option>
+                    <option value="legal">LEGAL</option>
+                    <option value="corporativo">CORPORATIVO</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label for="horasNecessarias" class="form-label">Horas Necessárias:</label>
+                <input type="number" id="horasNecessarias" class="form-control">
+            </div>
+
+            <div class="col-md-6">
+                <label for="statusProjeto" class="form-label">Status:</label>
+                <select id="statusProjeto" class="form-select">
+                    <option value=""></option>
+                    <option value="Concluído">Concluído</option>
+                    <option value="Cancelado">Cancelado</option>
+                    <option value="Em Execução">Em Execução</option>
+                    <option value="Não Iniciado">Não Iniciado</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label for="creditoEstimado" class="form-label">Crédito Estimado:</label>
+                <input type="number" id="creditoEstimado" class="form-control">
+            </div>
+
+            <div class="col-md-6">
+                <label for="creditoRealizado" class="form-label">Crédito Realizado:</label>
+                <input type="number" id="creditoRealizado" class="form-control">
+            </div>
+
+            <div class="col-md-6">
+                <label for="inicioProjeto" class="form-label">Início do Projeto:</label>
+                <input type="date" id="inicioProjeto" class="form-control">
+            </div>
+
+            <div class="col-md-6">
+                <label for="finalProjeto" class="form-label">Final do Projeto:</label>
+                <input type="date" id="finalProjeto" class="form-control">
+            </div>
+
+            <div class="col-12 d-flex justify-content-center gap-3 mt-3">
+                <button type="submit" class="btn btn-primary botao-form">Salvar</button>
+                <button type="button" onclick="navigateTo('menu.html')" class="btn btn-secondary botao-form">Voltar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container table-container mt-5">
+        <!-- Campo de Filtro -->
+        <input type="text" id="filterInput" class="form-control mb-3" placeholder="Filtrar por Nome do Projeto">
+        
+        <!-- Tabela de Projetos -->
+        <table id="projetosTable" class="table table-striped table-bordered">
+            <caption class="text-center">Projetos em andamento</caption>
+            <thead class="table-success">
+                <tr>
+                    <th>Projeto</th>
+                    <th>Previsão</th>
+                    <th>Início</th>
+                    <th>Final</th>
+                    <th>Status</th>
+                    <th>Crédito Estimado</th>
+                    <th>Crédito Realizado</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dados serão carregados aqui -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="projetos_js.js"></script>
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadProjetosTable();
+        });
+    </script>
+</body>
+</html>

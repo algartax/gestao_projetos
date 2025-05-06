@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Analistas</title>
+    <link rel="stylesheet" href="relatorio_analist.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.27.0/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="AM3.png" alt="Logo" class="logo">
+        <div class="button-container">
+            <button class="sidebar-button" onclick="navigateTo('relatorios.html')">Projetos</button>
+            <button class="sidebar-button" onclick="navigateTo('relatorio_analist.html')">Analistas</button>
+            <button class="sidebar-button" onclick="navigateTo('relatorio_hs.html')">Horas Produção</button>
+            <button class="sidebar-button" onclick="navigateTo('relatorio_atrib.html')">Horas Atribuídas</button>
+            <button class="sidebar-button" onclick="navigateTo('registro.html')">Registro</button>
+            <button class="sidebar-button" onclick="navigateTo('menu.html')">Admin</button>
+        </div>
+    </div>
+    <div class="container">
+        <div class="excel">
+            <button class="excel-button" onclick="downloadPlanilha()">
+                <i class="fas fa-file-excel"></i> Exportar para Excel
+            </button>
+        </div>
+        <div class="filtros">
+            <label for="analistaSelect">Analista:</label>
+            <input type="text" id="analistaSelect" readonly>
+        </div>
+        <div class="filtros-mes-ano">
+            <label for="mesSelect">Mês:</label>
+            <select id="mesSelect">
+                <option value="">Todos</option>
+                <option value="1">Janeiro</option>
+                <option value="2">Fevereiro</option>
+                <option value="3">Março</option>
+                <option value="4">Abril</option>
+                <option value="5">Maio</option>
+                <option value="6">Junho</option>
+                <option value="7">Julho</option>
+                <option value="8">Agosto</option>
+                <option value="9">Setembro</option>
+                <option value="10">Outubro</option>
+                <option value="11">Novembro</option>
+                <option value="12">Dezembro</option>
+            </select>
+
+            <label for="anoSelect">Ano:</label>
+            <select id="anoSelect">
+                <option value="">Todos</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+            </select>
+        </div>
+        <div class="grafico-rosca">
+            <canvas id="doughnutChart"></canvas>
+        </div>
+        <div class="grafico-barra">
+            <canvas id="barChart"></canvas>
+        </div>
+        <div class="tabela">
+            <table id="missingDatesTable">
+                <thead>
+                    <tr>
+                        <th>Datas não Apontadas</th>
+                        <th>Avisado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Datas faltantes serão inseridas aqui -->
+                </tbody>
+            </table>
+        </div>
+        <div class="imagem-am1">
+            <img src="AM1.png" alt="Imagem AM1">
+        </div>
+    </div>
+    <script src="relatorio_analist.js"></script>
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUserInfo();
+            await filtrarDados();
+        });
+    </script>
+</body>
+</html>

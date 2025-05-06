@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="registro_css.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.27.0/dist/umd/supabase.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <img id="top-image" src="AM1.png" alt="Imagem do topo">
+    <button class="back-button" onclick="navigateTo('menu.html')">Admin</button>
+    <button class="back-button2" onclick="navigateTo('relatorios.html')">Relatórios</button>
+    <div class="form-container">
+        <h1>Registro de Horas</h1>
+        <form id="formRegistro">
+            <label for="nomeAnalista">Nome do Analista:</label>
+            <input type="text" id="nomeAnalista" readonly>
+
+            <label for="nomeProjeto">Nome do Projeto:</label>
+            <select id="nomeProjeto">
+                <option value=""></option>
+                <!-- Opções serão carregadas do banco de dados -->
+            </select>
+
+            <label for="horasGastas">Horas Gastas:</label>
+            <select id="horasGastas">
+                <option value=""></option>
+                <option value="0.5">00:30</option>
+                <option value="1">01:00</option>
+                <option value="1.5">01:30</option>
+                <option value="2">02:00</option>
+                <option value="2.5">02:30</option>
+                <option value="3">03:00</option>
+                <option value="3.5">03:30</option>
+                <option value="4">04:00</option>
+                <option value="4.5">04:30</option>
+                <option value="5">05:00</option>
+                <option value="5.5">05:30</option>
+                <option value="6">06:00</option>
+                <option value="6.5">06:30</option>
+                <option value="7">07:00</option>
+                <option value="7.5">07:30</option>
+                <option value="8">08:00</option>
+            </select>
+
+            <label for="data">Data:</label>
+            <input type="date" id="data">
+
+            <button type="submit">Salvar</button>
+        </form>
+    </div>
+    
+    <div class="filter-container">
+        <input type="date" id="startDate" placeholder="Data Início">
+        <input type="date" id="endDate" placeholder="Data Fim">
+        <button id="clearFilterButton" onclick="clearDateFilter()">Limpar</button>
+    </div>
+
+    <div class="table-container">
+        <table id="registrosTable">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Nome</th>
+                    <th>Projeto</th>
+                    <th>Horas</th>
+                    <th>Excluir</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Registros serão carregados aqui -->
+            </tbody>
+        </table>
+    </div>
+    <script src="registro_js.js"></script>
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUserInfo();
+            await loadSelectOptions('projetos', 'projeto', 'nomeProjeto');
+            await loadRegistros();
+        });
+    </script>
+</body>
+</html>

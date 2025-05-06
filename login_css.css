@@ -1,0 +1,95 @@
+/* login_css.css */
+body {
+    font-family: 'Roboto', sans-serif;
+    background: url('./fund.png') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-container {
+    background: rgba(255, 255, 255, 0.1); /* Transparência aumentada para 0.7 */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+h1 {
+    font-family: 'Roboto', sans-serif; /* Aplicação da fonte Roboto */
+    font-weight: 700; /* Peso da fonte para deixar mais robusta */
+    color: #f9faf9;
+    margin-bottom: 30px;
+    font-size: 26px; /* Tamanho ajustado para mais impacto */
+}
+
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+label {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #f3fcf7;
+}
+
+input {
+    margin: 10px 0;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+input:focus {
+    border-color: #4c9462;
+}
+
+button {
+    background-color: #4c9462;
+    color: white;
+    border: none;
+    padding: 15px;
+    margin: 30px 0 10px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #4c9462;
+    transform: translateY(-2px);
+}
+
+#message {
+    color: red;
+    margin-top: 20px;
+}
+
+#changePasswordButton {
+    background: none;
+    border: none;
+    color: #4c9462;
+    padding: 0;
+    margin: 30px 0 10px;
+    cursor: pointer;
+    font-size: 18px;
+    text-decoration: underline;
+}
+
+#changePasswordButton:hover {
+    color: #4c9462;
+}

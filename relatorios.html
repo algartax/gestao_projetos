@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios</title>
+    <link rel="stylesheet" href="relatorios_css.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.27.0/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="AM2.png" alt="Logo" class="logo">
+        <div class="button-container">
+            <button class="sidebar-button" onclick="showProjetosRelatorio()">Projetos</button>
+            <button class="sidebar-button" onclick="navigateTo('relatorio_analist.html')">Analistas</button>
+            <button class="sidebar-button" onclick="navigateTo('relatorio_hs.html')">Horas Produção</button>
+            <button class="sidebar-button" onclick="navigateTo('relatorio_atrib.html')">Horas Atribuídas</button>
+            <button class="sidebar-button" onclick="navigateTo('registro.html')">Registro</button>
+        </div>
+    </div>
+    <div class="container">
+        <!-- Campo de Filtro -->
+        <input type="text" id="filterInput" class="form-control mb-3" placeholder="Filtrar por Nome do Projeto" oninput="showProjetosRelatorio()">
+        
+        <div id="projetos-relatorio" class="relatorio-container" style="display: none;"></div>
+    </div>
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        async function showProjetosRelatorio() {
+            const SUPABASE_URL = 'https://fgcysoitaztucsjyrvxe.supabase.co';
+            const SUPABASE_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZnY3lzb2l0YXp0dWNzanlydnhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgzNjYwNjIsImV4cCI6MjAzMzk0MjA2Mn0.SXrl_B22fCoyeh9hIU9pcpOV5lZtZpfUQGO920Hzzns';
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
+
+            const relatorioContainer = document.getElementById('projetos-relatorio');
+            const filterValue = document.getElementById('filterInput').value.toLowerCase(); // Obter valor do filtro
+            relatorioContainer.innerHTML = '';
+            relatorioContainer.style.display = 'block';
+
+            let { data: projetos, error: projetosError } = await supabase.from('projetos').select('*');
+            if (projetosError) {
+                console.error('Erro ao buscar projetos:', projetosError);
+                return;
+            }
+
+            // Filtrar projetos conforme o valor digitado
+            if (filterValue) {
+                projetos = projetos.filter(projeto => projeto.projeto.toLowerCase().includes(filterValue));
+            }
+
+            for (const projeto of projetos) {
+                const { data: atribuicoes, error: atribuicoesError } = await supabase
+                    .from('atribuicao')
+                    .select('horas')
+                    .eq('projeto', projeto.projeto);
+
+                const { data: registros, error: registrosError } = await supabase
+                    .from('registro')
+                    .select('horas')
+                    .eq('projeto', projeto.projeto);
+
+                if (atribuicoesError || registrosError) {
+                    console.error('Erro ao buscar atribuicoes ou registros:', atribuicoesError || registrosError);
+                    return;
+                }
+
+                const horasAtribuidas = atribuicoes.reduce((sum, atrib) => sum + atrib.horas, 0);
+                const horasConcluidas = registros.reduce((sum, reg) => sum + reg.horas, 0);
+                const faltaAtribuir = projeto.horas - horasAtribuidas;
+                const progresso = (horasConcluidas / projeto.horas) * 100;
+                const corBarra = progresso >= 100 ? 'green' : '#19e26d';
+
+                const creditoEstimadoFormatado = parseFloat(projeto.creditoEstimado).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                const creditoRealizadoFormatado = parseFloat(projeto.creditoRealizado).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+                const projetoRelatorio = `
+                    <div class="relatorio-item">
+                        <div>
+                            <h3>${projeto.projeto}</h3>
+                            <p>Data do Início: ${projeto.inicio}</p>
+                            <p>Status: ${projeto.status}</p>
+                            <p>Crédito Estimado: ${creditoEstimadoFormatado}</p>
+                            <p>Crédito Realizado: ${creditoRealizadoFormatado}</p>
+                            <p>Estimado: ${projeto.horas} horas</p>
+                            <p>Horas Atribuídas: ${horasAtribuidas} horas</p>
+                            <p>Falta Atribuir: ${faltaAtribuir} horas</p>
+                            <p>Horas Concluídas: ${horasConcluidas} horas</p>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: ${progresso}%; background-color: ${corBarra};">
+                                ${progresso.toFixed(2)}%
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                relatorioContainer.insertAdjacentHTML('beforeend', projetoRelatorio);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const functionToExecute = localStorage.getItem('functionToExecute');
+            if (functionToExecute) {
+                localStorage.removeItem('functionToExecute');
+                if (typeof window[functionToExecute] === 'function') {
+                    window[functionToExecute]();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

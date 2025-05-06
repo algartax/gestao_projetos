@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Projetos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        .container {
+            text-align: center;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .menu-button {
+            background-color: #43a373;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            margin: 10px 0;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .menu-button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .excel-container {
+            margin-top: 30px;
+        }
+
+        .excel-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            width: 2.3cm;
+            height: 2.3cm;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .excel-button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .excel-button i {
+            font-size: 24px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.27.0/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Gestão de Projetos</h1>
+        <div class="menu">
+            <button onclick="navigateTo('projetos.html')" class="menu-button">Projetos</button>
+            <button onclick="navigateTo('atribuicao.html')" class="menu-button">Atribuição</button>
+            <button onclick="navigateTo('registro.html')" class="menu-button">Registro</button>
+        </div>
+        <div class="excel-container">
+            <h1>Baixar Apontamentos de todos os Analistas</h1>
+            <button class="excel-button" onclick="downloadApontamentos()">
+                <i class="fas fa-file-excel"></i>
+            </button>
+        </div>
+        <div class="excel-container">
+            <h1>Horas possíveis de atribuir por mês</h1>
+            <button class="excel-button" onclick="downloadHoras()">
+                <i class="fas fa-file-excel"></i>
+            </button>
+        </div>
+    </div>
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        const SUPABASE_URL = 'https://fgcysoitaztucsjyrvxe.supabase.co';
+        const SUPABASE_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZnY3lzb2l0YXp0dWNzanlydnhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgzNjYwNjIsImV4cCI6MjAzMzk0MjA2Mn0.SXrl_B22fCoyeh9hIU9pcpOV5lZtZpfUQGO920Hzzns';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
+
+        // Função auxiliar para buscar todos os registros com paginação
+        async function fetchAllRecords(table) {
+            const pageSize = 1000;
+            let allRecords = [];
+            let page = 0;
+            let hasMore = true;
+
+            while (hasMore) {
+                const { data, error } = await supabase
+                    .from(table)
+                    .select('*')
+                    .range(page * pageSize, (page + 1) * pageSize - 1);
+
+                if (error) {
+                    console.error(`Erro ao carregar dados da tabela ${table}:`, error);
+                    throw error;
+                }
+
+                if (data && data.length > 0) {
+                    allRecords = [...allRecords, ...data];
+                    page++;
+                } else {
+                    hasMore = false;
+                }
+            }
+
+            return allRecords;
+        }
+
+        // Função para baixar apontamentos
+        async function downloadApontamentos() {
+            try {
+                // Mostrar mensagem de carregamento
+                const loadingMessage = document.createElement('div');
+                loadingMessage.textContent = 'Carregando dados, por favor aguarde...';
+                loadingMessage.style.position = 'fixed';
+                loadingMessage.style.top = '50%';
+                loadingMessage.style.left = '50%';
+                loadingMessage.style.transform = 'translate(-50%, -50%)';
+                loadingMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+                loadingMessage.style.color = 'white';
+                loadingMessage.style.padding = '20px';
+                loadingMessage.style.borderRadius = '10px';
+                loadingMessage.style.zIndex = '1000';
+                document.body.appendChild(loadingMessage);
+
+                // Buscar todos os registros
+                const registros = await fetchAllRecords('registro');
+                const finalizados = await fetchAllRecords('finalizados');
+
+                // Criar o workbook e adicionar as planilhas
+                const workbook = XLSX.utils.book_new();
+
+                const registrosSheet = XLSX.utils.json_to_sheet(registros);
+                XLSX.utils.book_append_sheet(workbook, registrosSheet, 'Registros');
+
+                const finalizadosSheet = XLSX.utils.json_to_sheet(finalizados);
+                XLSX.utils.book_append_sheet(workbook, finalizadosSheet, 'Finalizados');
+
+                // Remover mensagem de carregamento
+                document.body.removeChild(loadingMessage);
+
+                // Salvar o arquivo
+                XLSX.writeFile(workbook, 'Apontamentos_Analistas.xlsx');
+            } catch (error) {
+                console.error('Erro ao processar dados:', error);
+                alert('Erro ao gerar o arquivo Excel');
+                // Garantir que a mensagem de carregamento seja removida em caso de erro
+                const loadingMessage = document.querySelector('div');
+                if (loadingMessage) {
+                    document.body.removeChild(loadingMessage);
+                }
+            }
+        }
+
+        // Função para baixar horas
+        async function downloadHoras() {
+            try {
+                // Mostrar mensagem de carregamento
+                const loadingMessage = document.createElement('div');
+                loadingMessage.textContent = 'Carregando dados, por favor aguarde...';
+                loadingMessage.style.position = 'fixed';
+                loadingMessage.style.top = '50%';
+                loadingMessage.style.left = '50%';
+                loadingMessage.style.transform = 'translate(-50%, -50%)';
+                loadingMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+                loadingMessage.style.color = 'white';
+                loadingMessage.style.padding = '20px';
+                loadingMessage.style.borderRadius = '10px';
+                loadingMessage.style.zIndex = '1000';
+                document.body.appendChild(loadingMessage);
+
+                // Buscar todos os registros
+                const horas = await fetchAllRecords('horas');
+
+                // Criar o workbook e adicionar a planilha
+                const workbook = XLSX.utils.book_new();
+
+                const horasSheet = XLSX.utils.json_to_sheet(horas);
+                XLSX.utils.book_append_sheet(workbook, horasSheet, 'Horas');
+
+                // Remover mensagem de carregamento
+                document.body.removeChild(loadingMessage);
+
+                // Salvar o arquivo
+                XLSX.writeFile(workbook, 'Horas_Atribuicao.xlsx');
+            } catch (error) {
+                console.error('Erro ao processar dados:', error);
+                alert('Erro ao gerar o arquivo Excel');
+                // Garantir que a mensagem de carregamento seja removida em caso de erro
+                const loadingMessage = document.querySelector('div');
+                if (loadingMessage) {
+                    document.body.removeChild(loadingMessage);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

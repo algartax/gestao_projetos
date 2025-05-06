@@ -1,0 +1,105 @@
+/* Estilo geral */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+/* Botão Excel com largura fixa */
+.excel-button {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 2cm; /* Largura fixa de 2 cm */
+    height: 2cm; /* Altura fixa de 2 cm */
+    font-size: 16px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.excel-button:hover {
+    background-color: #218838;
+}
+
+/* Botões Salvar e Voltar com dimensões fixas */
+.botao-form {
+    width: 3cm;
+    height: 1.3cm;
+    font-size: 16px;
+}
+
+/* Estilos para a tabela */
+.table-container {
+    margin-top: 20px;
+}
+
+table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Ajuste para conteúdo padronizado nas células */
+th, td {
+    padding: 15px;
+    text-align: left;
+    white-space: nowrap; /* Impede quebra de linha */
+    overflow: hidden; /* Oculta o conteúdo excedente */
+    text-overflow: ellipsis; /* Adiciona reticências para indicar conteúdo longo */
+    max-width: 150px; /* Define uma largura máxima para o conteúdo */
+}
+
+th {
+    font-weight: bold;
+}
+
+/* Botão de ações na célula */
+td button {
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: black;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+td button:hover {
+    background-color: darkorange;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container, .table-container {
+        width: 90%;
+    }
+    
+    h1 {
+        font-size: 20px;
+    }
+
+    .botao-form {
+        width: 100px;
+        height: 35px;
+        font-size: 14px;
+    }
+    
+    th, td {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 18px;
+    }
+
+    label, select, input, button {
+        font-size: 14px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+}

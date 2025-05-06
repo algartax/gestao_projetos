@@ -1,0 +1,335 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    display: flex;
+    background-color: #f0f2f5;
+    overflow-x: hidden; /* Adicionado para evitar rolagem horizontal */
+}
+
+.sidebar {
+    width: 3cm;
+    background-color: #2c4b6e;
+    height: 100vh;
+    transition: width 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    z-index: 1000; /* Certificar-se de que a barra lateral está acima de outros elementos */
+}
+
+.sidebar:hover {
+    width: 9cm;
+}
+
+.logo {
+    margin-top: 20px;
+    width: 50%;
+    transition: width 0.3s ease;
+}
+
+.sidebar:hover .logo {
+    width: 50%;
+}
+
+.button-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.sidebar:hover .button-container {
+    display: flex;
+}
+
+.sidebar-button {
+    background-color: #5e6ba5;
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    margin: 10px 0;
+    cursor: pointer;
+    width: 80%;
+    font-size: 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.sidebar-button:hover {
+    background-color: #0d151d;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.container {
+    margin-left: 3cm;
+    padding: 20px;
+    flex-grow: 1;
+    position: relative;
+}
+
+.sidebar:hover .container {
+    margin-left: 9cm;
+}
+
+.filtros {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 40px;
+    width: 150%; /* Ajustado para 40% */
+    max-width: 423px; /* Ajuste adicional para telas maiores */
+    position: absolute;
+    top: 300%;
+    left: 8%;
+}
+
+.filtros-mes-ano {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: calc(1000% + 0.6cm); /* Ajustado para 40% + 0.6cm */
+    max-width: calc(400px + 0.6cm); /* Ajuste adicional para telas maiores */
+    position: absolute;
+    top: 500%;
+    left: 8%;
+}
+
+.filtros label {
+    font-weight: bold;
+    color: #333;
+}
+
+.filtros-mes-ano label {
+    font-weight: bold;
+    color: #333;
+}
+
+.filtros select, .filtros input {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+.filtros-mes-ano select {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: calc(100% + 0.6cm);
+}
+
+.tabela {
+    width: 100%;
+    max-width: 300px;
+    position: absolute;
+    top: 1100%;
+    left: 8%;
+}
+
+.tabela h2 {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#missingDatesTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#missingDatesTable th, #missingDatesTable td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+#missingDatesTable th {
+    background-color: #5e6ba5;
+    color: white;
+}
+
+#missingDatesTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#missingDatesTable .check-button {
+    cursor: pointer;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#missingDatesTable .check-button:hover {
+    background-color: #218838;
+}
+
+.grafico-barra {
+    background-color: #feffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Ajustado para 100% */
+    max-width: 800px;
+    height: 400px;
+    position: absolute;
+    top: 1300%;
+    right: 8%;
+}
+
+.grafico-rosca {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Ajustado para 100% */
+    max-width: 450px; /* Ajuste adicional para manter a proporção */
+    height: 350px;
+    position: absolute;
+    top: 200%;
+    right: 8%;
+}
+
+.charts-container {
+    display: flex;
+    flex-wrap: wrap; /* Adicionado para permitir a quebra de linha */
+    justify-content: center; /* Centralizar os gráficos */
+    gap: 20px;
+    position: relative;
+}
+
+.large-chart {
+    width: 100%;
+    height: 800px;
+}
+
+.small-chart {
+    width: 100%;
+    height: 900px;
+}
+
+.excel {
+    position: absolute;
+    top: 50%;
+    left: 8%;
+}
+
+.excel-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.excel-button i {
+    font-size: 16px;
+}
+
+.excel-button:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+.imagem-am1 {
+    position: absolute;
+    top: 600%;
+    right: 47%;
+    width: 4cm;
+    height: 4cm;
+}
+
+.imagem-am1 img {
+    width: 100%;
+    height: 100%;
+    opacity: 40%;
+}
+
+@media (max-width: 1200px) {
+    .filtros, .filtros-mes-ano {
+        width: calc(50% + 0.6cm); /* Ajustado para 50% + 0.6cm */
+    }
+    
+    .grafico-rosca {
+        max-width: 300px; /* Ajuste adicional para telas menores */
+    }
+
+    .grafico-barra {
+        max-width: 800px; /* Ajuste adicional para telas menores */
+    }
+}
+
+@media (max-width: 800px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 10px;
+    }
+
+    .sidebar:hover {
+        width: 100%;
+    }
+
+    .logo {
+        width: 20%;
+    }
+
+    .sidebar:hover .logo {
+        width: 20%;
+    }
+
+    .button-container {
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+    }
+
+    .container {
+        margin-left: 0;
+        margin-top: 20px;
+    }
+
+    .sidebar:hover .container {
+        margin-left: 0;
+    }
+
+    .filtros, .filtros-mes-ano, .tabela, .charts-container, .imagem-am1 {
+        position: static;
+        width: 100%;
+    }
+
+    .charts-container {
+        margin-top: 20px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .grafico-barra, .grafico-rosca {
+        width: 100%;
+    }
+
+    .excel {
+        position: static;
+        transform: none;
+        margin-left: 0%;
+        margin-right: 0%;
+    }
+}
